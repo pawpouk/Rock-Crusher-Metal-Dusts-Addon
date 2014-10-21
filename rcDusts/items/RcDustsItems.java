@@ -1,6 +1,6 @@
 package rcDusts.items;
 
-import ic2.core.AdvShapelessRecipe;
+//import ic2.api.core.AdvShapelessRecipe;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,9 +12,11 @@ import java.util.Random;
 import mods.railcraft.api.crafting.IBlastFurnaceRecipe;
 import mods.railcraft.api.crafting.IRockCrusherRecipe;
 import mods.railcraft.api.crafting.RailcraftCraftingManager;
-import mods.railcraft.common.core.RailcraftConfig;
-import mods.railcraft.common.items.ItemDust.EnumDust;
+//import mods.railcraft.common.core.RailcraftConfig;
+//import mods.railcraft.api.items.ItemDust.EnumDust;
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -22,10 +24,12 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import rcDusts.ModInformation;
 import rcDusts.config.ConfigurationHandler;
+import sun.security.ssl.Debug;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
+//import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class RcDustsItems {
 	
@@ -52,11 +56,13 @@ public class RcDustsItems {
 	public static boolean hasLeadIngot;
 	public static boolean hasSilverIngot;
 	public static boolean hasTinIngot;
+	public static boolean hasBronzeIngot;
 
 	
 	public static void init() {
 		
-		dust = new ItemDust(RcDustsItemInfo.DUST_ID);
+//		dust = new ItemDust(RcDustsItemInfo.DUST_ID);
+		dust = new ItemDust();
 		
 		dustCopper = new ItemStack(dust, 1, 0);
 		dustGold = new ItemStack(dust, 1, 1);
@@ -72,10 +78,9 @@ public class RcDustsItems {
 		dustManyullyn = new ItemStack(dust, 1, 11);
 		
 		
-		
 	}
 	
-	public static void addNames() {
+/*	public static void addNames() {
 		
 		LanguageRegistry.addName(dustCopper, RcDustsItemInfo.DUST_NAMES[0]);
 		LanguageRegistry.addName(dustGold, RcDustsItemInfo.DUST_NAMES[1]);
@@ -91,7 +96,7 @@ public class RcDustsItems {
 		LanguageRegistry.addName(dustManyullyn, RcDustsItemInfo.DUST_NAMES[11]);
 		
 		
-	}
+	}*/
 	
 	public static void registerDustsWithOreDict() {
 		
@@ -108,22 +113,31 @@ public class RcDustsItems {
 		OreDictionary.registerOre("dustArdite", dustArdite);
 		OreDictionary.registerOre("dustManyullyn", dustManyullyn);
 		
-		OreDictionary.registerOre("ingotIron", new ItemStack(Item.ingotIron));
-		OreDictionary.registerOre("ingotGold", new ItemStack(Item.ingotGold));
+		OreDictionary.registerOre("ingotIron", new ItemStack(Items.iron_ingot));
+		OreDictionary.registerOre("ingotGold", new ItemStack(Items.gold_ingot));
 		
 	}
 	
 	public static void checkWhatIngotsWeHave() {
-		
+			
 		hasCopperIngot = !OreDictionary.getOres("ingotCopper").isEmpty();
 		hasLeadIngot = !OreDictionary.getOres("ingotLead").isEmpty();
 		hasSilverIngot = !OreDictionary.getOres("ingotSilver").isEmpty();
 		hasTinIngot = !OreDictionary.getOres("ingotTin").isEmpty();
+		hasBronzeIngot = !OreDictionary.getOres("ingotBronze").isEmpty();
 		
+/*//      ores... test list values...
+		String[] allOres =  OreDictionary.getOreNames();
+		logger.info("RcDusts: -------- LIST OF ORES ----------");
+		for(String s : OreDictionary.getOreNames()) {
+			logger.info("RcDusts: "+s);
+		}
+		logger.info("RcDusts: --------(LIST OF ORES)----------");
+		*/
 	}
 	
 	public static void removeSomeRecipes() {
-		//remove the bronze dust recipe
+/*		//remove the bronze dust recipe
 		ListIterator<IRecipe> iterator = CraftingManager.getInstance().getRecipeList().listIterator();
 		ItemStack recipeResult = null;
 		while(iterator.hasNext()) {
@@ -135,9 +149,10 @@ public class RcDustsItems {
 					break;
 				}
 			}
-		}
+		}*/
+		
 		//remove the IC2 rock crusher recipes
-		ListIterator<IRockCrusherRecipe> crusherIterator = RailcraftCraftingManager.rockCrusher.getRecipes().listIterator();
+		ListIterator<? extends IRockCrusherRecipe> crusherIterator = RailcraftCraftingManager.rockCrusher.getRecipes().listIterator();
 
 		ArrayList<Integer> oresToGrab = new ArrayList<Integer>();
 		oresToGrab.add(OreDictionary.getOreID("oreIron"));
@@ -177,25 +192,25 @@ public class RcDustsItems {
 		ItemStack leadCrushDouble = null;
 		boolean hasNickel = false;
 		ItemStack nickel = null;
-		
 		if(isIC2Installed && ConfigurationHandler.doIC2CrushedOres) {
 			copperCrushSingle = OreDictionary.getOres("crushedCopper").get(0);
-			copperCrushDouble = new ItemStack(copperCrushSingle.itemID, 2, copperCrushSingle.getItemDamage());
+			copperCrushDouble = new ItemStack( copperCrushSingle.getItem(), 2, copperCrushSingle.getItemDamage());
 			tinCrushSingle = OreDictionary.getOres("crushedTin").get(0);
-			tinCrushDouble = new ItemStack(tinCrushSingle.itemID, 2, tinCrushSingle.getItemDamage());
+			tinCrushDouble = new ItemStack(tinCrushSingle.getItem(), 2, tinCrushSingle.getItemDamage());
 			goldCrushSingle = OreDictionary.getOres("crushedGold").get(0);
-			goldCrushDouble = new ItemStack(goldCrushSingle.itemID, 2, goldCrushSingle.getItemDamage());
+			goldCrushDouble = new ItemStack(goldCrushSingle.getItem(), 2, goldCrushSingle.getItemDamage());
 			ironCrushSingle = OreDictionary.getOres("crushedIron").get(0);
-			ironCrushDouble = new ItemStack(ironCrushSingle.itemID, 2, ironCrushSingle.getItemDamage());
+			ironCrushDouble = new ItemStack(ironCrushSingle.getItem(), 2, ironCrushSingle.getItemDamage());
 			silverCrushSingle = OreDictionary.getOres("crushedSilver").get(0);
-			silverCrushDouble = new ItemStack(silverCrushSingle.itemID, 2, silverCrushSingle.getItemDamage());
+			silverCrushDouble = new ItemStack(silverCrushSingle.getItem(), 2, silverCrushSingle.getItemDamage());
 			leadCrushSingle = OreDictionary.getOres("crushedLead").get(0);
-			leadCrushDouble = new ItemStack(leadCrushSingle.itemID, 2, leadCrushSingle.getItemDamage());
+			leadCrushDouble = new ItemStack(leadCrushSingle.getItem(), 2, leadCrushSingle.getItemDamage());
 			hasNickel = OreDictionary.getOres("crushedNickel").size() > 0;
 			if(hasNickel) {
 				nickel = OreDictionary.getOres("crushedNickel").get(0);
 			}
-		}else {
+		}else 
+		{
 			copperCrushSingle = dustCopper;
 			copperCrushDouble = new ItemStack(dust, 2, 0);
 			goldCrushSingle = dustGold;
@@ -214,67 +229,67 @@ public class RcDustsItems {
 			}
 		}
 		
-		ItemStack doubleString = new ItemStack(Item.silk, 2);
-		ItemStack singleString = new ItemStack(Item.silk, 1);
+		ItemStack doubleString = new ItemStack(Items.string, 2);
+		ItemStack singleString = new ItemStack(Items.string, 1);
 		for (int i = 0; i < 16; i++) {
-			ItemStack newFoundOre = new ItemStack(Block.cloth, 1, i);
+			ItemStack newFoundOre = new ItemStack(Blocks.wool, 1, i);
 			IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
 			r.addOutput(doubleString, 1.0F);
 			r.addOutput(singleString, .5F);
 		}
 		
-		IRockCrusherRecipe c = RailcraftCraftingManager.rockCrusher.createNewRecipe(new ItemStack(Block.oreCoal, 1), true, true);
-		c.addOutput(new ItemStack(Item.coal, 2, 0), 1.0F);
-		c.addOutput(new ItemStack(Item.coal, 1, 0), .10F);
+		IRockCrusherRecipe c = RailcraftCraftingManager.rockCrusher.createNewRecipe(new ItemStack(Blocks.coal_ore, 1), true, true);
+		c.addOutput(new ItemStack(Items.coal, 2, 0), 1.0F);
+		c.addOutput(new ItemStack(Items.coal, 1, 0), .10F);
 		
-		mods.railcraft.common.items.ItemDust railcraftDust = new mods.railcraft.common.items.ItemDust(RailcraftConfig.getItemId("railcraft.dust"));
-		ItemStack sulfur = new ItemStack(railcraftDust, 1, EnumDust.SULFUR.ordinal());
-		for (ItemStack newFoundOre : OreDictionary.getOres("oreSulfur")) {
-			IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-			r.addOutput(new ItemStack(sulfur.itemID, 8, sulfur.getItemDamage()), 1.0F);
-			r.addOutput(new ItemStack(sulfur.itemID, 1, sulfur.getItemDamage()), .1F);
-		}
+//		mods.railcraft.common.items.ItemDust railcraftDust = new mods.railcraft.common.items.ItemDust(RailcraftConfig.getItemId("railcraft.dust"));
+//		ItemStack sulfur = new ItemStack(railcraftDust, 1, EnumDust.SULFUR.ordinal());
+//		for (ItemStack newFoundOre : OreDictionary.getOres("oreSulfur")) {
+//			IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
+//			r.addOutput(new ItemStack(sulfur.itemID, 8, sulfur.getItemDamage()), 1.0F);
+//			r.addOutput(new ItemStack(sulfur.itemID, 1, sulfur.getItemDamage()), .1F);
+//		}
+//		
+//		ItemStack saltpeter = new ItemStack(railcraftDust, 1, EnumDust.SALTPETER.ordinal());
+//		for (ItemStack newFoundOre : OreDictionary.getOres("oreSaltpeter")) {
+//			IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
+//			r.addOutput(new ItemStack(saltpeter.itemID, 5, saltpeter.getItemDamage()), 1.0F);
+//			r.addOutput(new ItemStack(saltpeter.itemID, 1, saltpeter.getItemDamage()), .1F);
+//		}
 		
-		ItemStack saltpeter = new ItemStack(railcraftDust, 1, EnumDust.SALTPETER.ordinal());
-		for (ItemStack newFoundOre : OreDictionary.getOres("oreSaltpeter")) {
-			IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-			r.addOutput(new ItemStack(saltpeter.itemID, 5, saltpeter.getItemDamage()), 1.0F);
-			r.addOutput(new ItemStack(saltpeter.itemID, 1, saltpeter.getItemDamage()), .1F);
-		}
-		
-		ItemStack emeraldDouble = new ItemStack(Item.emerald, 2);
-		ItemStack emeraldSingle = new ItemStack(Item.emerald, 1);
+		ItemStack emeraldDouble = new ItemStack(Items.emerald, 2);
+		ItemStack emeraldSingle = new ItemStack(Items.emerald, 1);
 		for (ItemStack newFoundOre : OreDictionary.getOres("oreEmerald")) {
 			IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
 			r.addOutput(emeraldDouble, 1.0F);
 			r.addOutput(emeraldSingle, .1F);
 		}
 		
-		ItemStack redstoneTen = new ItemStack(Item.redstone, 10);
-		ItemStack glowstoneSingle = new ItemStack(Item.glowstone, 1);
+		ItemStack redstoneTen = new ItemStack(Items.redstone, 10);
+		ItemStack glowstoneSingle = new ItemStack(Items.glowstone_dust, 1);
 		for (ItemStack newFoundOre : OreDictionary.getOres("oreRedstone")) {
 			IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
 			r.addOutput(redstoneTen, 1.0F);
 			r.addOutput(glowstoneSingle, .1F);
 		}
 		
-		ItemStack diamondDouble = new ItemStack(Item.diamond, 2);
-		ItemStack coalSingle = new ItemStack(Item.coal, 1, 0);
+		ItemStack diamondDouble = new ItemStack(Items.diamond, 2);
+		ItemStack coalSingle = new ItemStack(Items.coal, 1, 0);
 		for (ItemStack newFoundOre : OreDictionary.getOres("oreDiamond")) {
 			IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
 			r.addOutput(diamondDouble, 1.0F);
 			r.addOutput(coalSingle, .1F);
 		}
 		
-		ItemStack lapisTwelve = new ItemStack(Item.dyePowder, 12, 4);
-		ItemStack lapisSingle = new ItemStack(Item.dyePowder, 1, 4);
+		ItemStack lapisTwelve = new ItemStack(Items.dye, 12, 4);
+		ItemStack lapisSingle = new ItemStack(Items.dye, 1, 4);
 		for (ItemStack newFoundOre : OreDictionary.getOres("oreLapis")) {
 			IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
 			r.addOutput(lapisTwelve, 1.0F);
 			r.addOutput(lapisSingle, .1F);
 		}
 		
-		ItemStack quartzSingle = new ItemStack(Item.netherQuartz, 1);
+		ItemStack quartzSingle = new ItemStack(Items.quartz, 1);
 		for (ItemStack newFoundOre : OreDictionary.getOres("oreQuartz")) {
 			IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
 			r.addOutput(quartzSingle, 1.0F);
@@ -290,7 +305,7 @@ public class RcDustsItems {
 			ItemStack sapphire = OreDictionary.getOres("gemSapphire").get(0);
 			for (ItemStack newFoundOre : OreDictionary.getOres("oreSapphire")) {
 				IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-				r.addOutput(new ItemStack(sapphire.itemID, 2, sapphire.getItemDamage()), 1.0F);
+				r.addOutput(new ItemStack(sapphire.getItem(), 2, sapphire.getItemDamage()), 1.0F);
 				r.addOutput(sapphire, .1F);
 				if(!OreDictionary.getOres("gemGreenSapphire").isEmpty()) {
 					r.addOutput(OreDictionary.getOres("gemGreenSapphire").get(0), .025F);
@@ -302,7 +317,7 @@ public class RcDustsItems {
 			ItemStack greenSapphire = OreDictionary.getOres("gemGreenSapphire").get(0);
 			for (ItemStack newFoundOre : OreDictionary.getOres("oreGreenSapphire")) {
 				IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-				r.addOutput(new ItemStack(greenSapphire.itemID, 2, greenSapphire.getItemDamage()), 1.0F);
+				r.addOutput(new ItemStack(greenSapphire.getItem(), 2, greenSapphire.getItemDamage()), 1.0F);
 				r.addOutput(greenSapphire, .1F);
 				if(!OreDictionary.getOres("gemSapphire").isEmpty()) {
 					r.addOutput(OreDictionary.getOres("gemSapphire").get(0), .025F);
@@ -314,16 +329,16 @@ public class RcDustsItems {
 			ItemStack ruby = OreDictionary.getOres("gemRuby").get(0);
 			for (ItemStack newFoundOre : OreDictionary.getOres("oreRuby")) {
 				IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-				r.addOutput(new ItemStack(ruby.itemID, 2, ruby.getItemDamage()), 1.0F);
+				r.addOutput(new ItemStack(ruby.getItem(), 2, ruby.getItemDamage()), 1.0F);
 				r.addOutput(ruby, .1F);
 			}
 		}
 		
 		if(isIC2Installed) {
-			ItemStack iridium = ic2.core.Ic2Items.iridiumOre;
+			ItemStack iridium =  ic2.api.item.IC2Items.getItem("iridiumOre"); //ic2.core.Ic2Items.iridiumOre;
 			for (ItemStack newFoundOre : OreDictionary.getOres("oreIridium")) {
 				IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-				r.addOutput(new ItemStack(iridium.itemID, 2, iridium.getItemDamage()), 1.0F);
+				r.addOutput(new ItemStack(iridium.getItem(), 2, iridium.getItemDamage()), 1.0F);
 				r.addOutput(iridium, .1F);
 				if(!OreDictionary.getOres("dustPlatium").isEmpty()) {
 					r.addOutput(OreDictionary.getOres("dustPlatium").get(0), .025F);
@@ -335,10 +350,10 @@ public class RcDustsItems {
 			ItemStack platinum = OreDictionary.getOres("dustPlatinum").get(0);
 			for (ItemStack newFoundOre : OreDictionary.getOres("orePlatinum")) {
 				IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-				r.addOutput(new ItemStack(platinum.itemID, 2, platinum.getItemDamage()), 1.0F);
+				r.addOutput(new ItemStack(platinum.getItem(), 2, platinum.getItemDamage()), 1.0F);
 				r.addOutput(platinum, .1F);
 				if(isIC2Installed) {
-					r.addOutput(ic2.core.Ic2Items.iridiumOre, .025F);
+					r.addOutput(ic2.api.item.IC2Items.getItem("iridiumOre"), .025F);
 				}
 			}
 		}
@@ -347,7 +362,7 @@ public class RcDustsItems {
 			ItemStack dustNickel = OreDictionary.getOres("dustNickel").get(0);
 			for (ItemStack newFoundOre : OreDictionary.getOres("oreNickel")) {
 				IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-				r.addOutput(new ItemStack(dustNickel.itemID, 2, dustNickel.getItemDamage()), 1.0F);
+				r.addOutput(new ItemStack(dustNickel.getItem(), 2, dustNickel.getItemDamage()), 1.0F);
 				r.addOutput(dustNickel, .1F);
 				if(!OreDictionary.getOres("dustPlatinum").isEmpty()) {
 					r.addOutput(OreDictionary.getOres("dustPlatinum").get(0), .025F);
@@ -360,7 +375,7 @@ public class RcDustsItems {
 			ItemStack certusDust = OreDictionary.getOres("dustCertusQuartz").get(0);
 			for (ItemStack newFoundOre : OreDictionary.getOres("oreCertusQuartz")) {
 				IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-				r.addOutput(new ItemStack(certus.itemID, 2, certus.getItemDamage()), 1.0F);
+				r.addOutput(new ItemStack(certus.getItem(), 2, certus.getItemDamage()), 1.0F);
 				r.addOutput(certusDust, .1F);
 			}
 			for (ItemStack newFoundOre : OreDictionary.getOres("crystalCertusQuartz")) {
@@ -370,7 +385,7 @@ public class RcDustsItems {
 		}
 		
 		if(!OreDictionary.getOres("dustWheat").isEmpty()) {
-			IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(new ItemStack(Item.wheat), true, true);
+			IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(new ItemStack(Items.wheat), true, true);
 			r.addOutput(OreDictionary.getOres("dustWheat").get(0), 1.0F);
 		}
 		
@@ -379,18 +394,18 @@ public class RcDustsItems {
 				ItemStack nikolite = OreDictionary.getOres("dustNikolite").get(0);
 				for (ItemStack newFoundOre : OreDictionary.getOres("oreNikolite")) {
 					IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-					r.addOutput(new ItemStack(nikolite.itemID, 15, nikolite.getItemDamage()), 1.0F);
+					r.addOutput(new ItemStack(nikolite.getItem(), 15, nikolite.getItemDamage()), 1.0F);
 					r.addOutput(nikolite, .1F);
-					r.addOutput(new ItemStack(Item.diamond, 1), .025F);
+					r.addOutput(new ItemStack(Items.diamond, 1), .025F);
 				}
 			}	
 		}
 		
 		if(isIC2Installed) {
-			ItemStack uranium = ic2.core.Ic2Items.crushedUraniumOre;
+			ItemStack uranium = ic2.api.item.IC2Items.getItem("crushedUraniumOre"); //.core.Ic2Items.crushedUraniumOre;
 			for (ItemStack newFoundOre : OreDictionary.getOres("oreUranium")) {
 				IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-				r.addOutput(new ItemStack(uranium.itemID, 2, uranium.getItemDamage()), 1.0F);
+				r.addOutput(new ItemStack(uranium.getItem(), 2, uranium.getItemDamage()), 1.0F);
 				r.addOutput(uranium, .1F);
 			}
 		}
@@ -399,7 +414,7 @@ public class RcDustsItems {
 			ItemStack apatite = OreDictionary.getOres("gemApatite").get(0);
 			for (ItemStack newFoundOre : OreDictionary.getOres("oreApatite")) {
 				IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-				r.addOutput(new ItemStack(apatite.itemID, 8, apatite.getItemDamage()), 1.0F);
+				r.addOutput(new ItemStack(apatite.getItem(), 8, apatite.getItemDamage()), 1.0F);
 				r.addOutput(apatite, .1F);
 			}
 		}
@@ -493,7 +508,7 @@ public class RcDustsItems {
 			ItemStack osmium = OreDictionary.getOres("dustOsmium").get(0);
 			for (ItemStack newFoundOre : OreDictionary.getOres("oreOsmium")) {
 				IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-				r.addOutput(new ItemStack(osmium.itemID, 2, osmium.getItemDamage()), 1.0F);
+				r.addOutput(new ItemStack(osmium.getItem(), 2, osmium.getItemDamage()), 1.0F);
 				r.addOutput(osmium, .1F);
 			}
 		}
@@ -504,13 +519,13 @@ public class RcDustsItems {
 		
 		for (ItemStack newFoundOre : OreDictionary.getOres("oreNetherCoal")) {
 			IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-			r.addOutput(new ItemStack(Item.coal, 4, 0), 1.0F);
-			r.addOutput(new ItemStack(Item.coal, 1, 0), 1.0F);
-			r.addOutput(new ItemStack(Item.coal, 1, 0), 1.0F);
+			r.addOutput(new ItemStack(Items.coal, 4, 0), 1.0F);
+			r.addOutput(new ItemStack(Items.coal, 1, 0), 1.0F);
+			r.addOutput(new ItemStack(Items.coal, 1, 0), 1.0F);
 		}
 		
-		ItemStack emeraldQuad = new ItemStack(Item.emerald, 4);
-		ItemStack emeraldSingle = new ItemStack(Item.emerald, 1);
+		ItemStack emeraldQuad = new ItemStack(Items.emerald, 4);
+		ItemStack emeraldSingle = new ItemStack(Items.emerald, 1);
 		for (ItemStack newFoundOre : OreDictionary.getOres("oreNetherEmerald")) {
 			IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
 			r.addOutput(emeraldQuad, 1.0F);
@@ -518,8 +533,8 @@ public class RcDustsItems {
 			r.addOutput(emeraldSingle, .1F);
 		}
 		
-		ItemStack redstoneTwenty = new ItemStack(Item.redstone, 20);
-		ItemStack glowstoneSingle = new ItemStack(Item.glowstone, 1);
+		ItemStack redstoneTwenty = new ItemStack(Items.redstone, 20);
+		ItemStack glowstoneSingle = new ItemStack(Items.glowstone_dust, 1);
 		for (ItemStack newFoundOre : OreDictionary.getOres("oreNetherRedstone")) {
 			IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
 			r.addOutput(redstoneTwenty, 1.0F);
@@ -527,8 +542,8 @@ public class RcDustsItems {
 			r.addOutput(glowstoneSingle, .1F);
 		}
 		
-		ItemStack diamondQuad = new ItemStack(Item.diamond, 4);
-		ItemStack coalSingle = new ItemStack(Item.coal, 1, 0);
+		ItemStack diamondQuad = new ItemStack(Items.diamond, 4);
+		ItemStack coalSingle = new ItemStack(Items.coal, 1, 0);
 		for (ItemStack newFoundOre : OreDictionary.getOres("oreNetherDiamond")) {
 			IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
 			r.addOutput(diamondQuad, 1.0F);
@@ -536,8 +551,8 @@ public class RcDustsItems {
 			r.addOutput(coalSingle, .1F);
 		}
 		
-		ItemStack lapisTwentyFour = new ItemStack(Item.dyePowder, 24, 4);
-		ItemStack lapisSingle = new ItemStack(Item.dyePowder, 1, 4);
+		ItemStack lapisTwentyFour = new ItemStack(Items.dye, 24, 4);
+		ItemStack lapisSingle = new ItemStack(Items.dye, 1, 4);
 		for (ItemStack newFoundOre : OreDictionary.getOres("oreNetherLapis")) {
 			IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
 			r.addOutput(lapisTwentyFour, 1.0F);
@@ -562,17 +577,17 @@ public class RcDustsItems {
 		
 		if(isIC2Installed && ConfigurationHandler.doIC2CrushedOres) {
 			copperCrushSingle = OreDictionary.getOres("crushedCopper").get(0);
-			copperCrushQuad = new ItemStack(copperCrushSingle.itemID, 4, copperCrushSingle.getItemDamage());
+			copperCrushQuad = new ItemStack(copperCrushSingle.getItem(), 4, copperCrushSingle.getItemDamage());
 			tinCrushSingle = OreDictionary.getOres("crushedTin").get(0);
-			tinCrushQuad = new ItemStack(tinCrushSingle.itemID, 4, tinCrushSingle.getItemDamage());
+			tinCrushQuad = new ItemStack(tinCrushSingle.getItem(), 4, tinCrushSingle.getItemDamage());
 			goldCrushSingle = OreDictionary.getOres("crushedGold").get(0);
-			goldCrushQuad = new ItemStack(goldCrushSingle.itemID, 4, goldCrushSingle.getItemDamage());
+			goldCrushQuad = new ItemStack(goldCrushSingle.getItem(), 4, goldCrushSingle.getItemDamage());
 			ironCrushSingle = OreDictionary.getOres("crushedIron").get(0);
-			ironCrushQuad = new ItemStack(ironCrushSingle.itemID, 4, ironCrushSingle.getItemDamage());
+			ironCrushQuad = new ItemStack(ironCrushSingle.getItem(), 4, ironCrushSingle.getItemDamage());
 			silverCrushSingle = OreDictionary.getOres("crushedSilver").get(0);
-			silverCrushQuad = new ItemStack(silverCrushSingle.itemID, 4, silverCrushSingle.getItemDamage());
+			silverCrushQuad = new ItemStack(silverCrushSingle.getItem(), 4, silverCrushSingle.getItemDamage());
 			leadCrushSingle = OreDictionary.getOres("crushedLead").get(0);
-			leadCrushQuad = new ItemStack(leadCrushSingle.itemID, 4, leadCrushSingle.getItemDamage());
+			leadCrushQuad = new ItemStack(leadCrushSingle.getItem(), 4, leadCrushSingle.getItemDamage());
 			hasNickel = OreDictionary.getOres("crushedNickel").size() > 0;
 			if(hasNickel) {
 				nickel = OreDictionary.getOres("crushedNickel").get(0);
@@ -699,7 +714,7 @@ public class RcDustsItems {
 				ItemStack sapphire = OreDictionary.getOres("gemSapphire").get(0);
 				for (ItemStack newFoundOre : OreDictionary.getOres("oreNetherSapphire")) {
 					IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-					r.addOutput(new ItemStack(sapphire.itemID, 4, sapphire.getItemDamage()), 1.0F);
+					r.addOutput(new ItemStack(sapphire.getItem(), 4, sapphire.getItemDamage()), 1.0F);
 					r.addOutput(sapphire, .1F);
 					r.addOutput(sapphire, .1F);
 					if(!OreDictionary.getOres("gemGreenSapphire").isEmpty()) {
@@ -713,7 +728,7 @@ public class RcDustsItems {
 				ItemStack greenSapphire = OreDictionary.getOres("gemGreenSapphire").get(0);
 				for (ItemStack newFoundOre : OreDictionary.getOres("oreNetherGreenSapphire")) {
 					IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-					r.addOutput(new ItemStack(greenSapphire.itemID, 4, greenSapphire.getItemDamage()), 1.0F);
+					r.addOutput(new ItemStack(greenSapphire.getItem(), 4, greenSapphire.getItemDamage()), 1.0F);
 					r.addOutput(greenSapphire, .1F);
 					r.addOutput(greenSapphire, .1F);
 					if(!OreDictionary.getOres("gemSapphire").isEmpty()) {
@@ -727,27 +742,27 @@ public class RcDustsItems {
 				ItemStack ruby = OreDictionary.getOres("gemRuby").get(0);
 				for (ItemStack newFoundOre : OreDictionary.getOres("oreNetherRuby")) {
 					IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-					r.addOutput(new ItemStack(ruby.itemID, 4, ruby.getItemDamage()), 1.0F);
+					r.addOutput(new ItemStack(ruby.getItem(), 4, ruby.getItemDamage()), 1.0F);
 					r.addOutput(ruby, .1F);
 					r.addOutput(ruby, .1F);
 				}
 			}
 			
 			if(isIC2Installed) {
-				ItemStack uranium = ic2.core.Ic2Items.crushedUraniumOre;
+				ItemStack uranium = ic2.api.item.IC2Items.getItem("crushedUraniumOre");  //core.Ic2Items.crushedUraniumOre;
 				for (ItemStack newFoundOre : OreDictionary.getOres("oreNetherUranium")) {
 					IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-					r.addOutput(new ItemStack(uranium.itemID, 4, uranium.getItemDamage()), 1.0F);
+					r.addOutput(new ItemStack(uranium.getItem(), 4, uranium.getItemDamage()), 1.0F);
 					r.addOutput(uranium, .1F);
 					r.addOutput(uranium, .1F);
 				}
 			}
 			
 			if(isIC2Installed) {
-				ItemStack iridium = ic2.core.Ic2Items.iridiumOre;
+				ItemStack iridium = ic2.api.item.IC2Items.getItem("iridiumOre");  //core.Ic2Items.iridiumOre;
 				for (ItemStack newFoundOre : OreDictionary.getOres("oreIridium")) {
 					IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-					r.addOutput(new ItemStack(iridium.itemID, 4, iridium.getItemDamage()), 1.0F);
+					r.addOutput(new ItemStack(iridium.getItem(), 4, iridium.getItemDamage()), 1.0F);
 					r.addOutput(iridium, .1F);
 					r.addOutput(iridium, .1F);
 					if(!OreDictionary.getOres("dustPlatium").isEmpty()) {
@@ -761,19 +776,19 @@ public class RcDustsItems {
 				ItemStack platinum = OreDictionary.getOres("dustPlatinum").get(0);
 				for (ItemStack newFoundOre : OreDictionary.getOres("oreNetherPlatinum")) {
 					IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-					r.addOutput(new ItemStack(platinum.itemID, 4, platinum.getItemDamage()), 1.0F);
+					r.addOutput(new ItemStack(platinum.getItem(), 4, platinum.getItemDamage()), 1.0F);
 					r.addOutput(platinum, .1F);
 					r.addOutput(platinum, .1F);
 					if(isIC2Installed) {
-						r.addOutput(ic2.core.Ic2Items.iridiumOre, .025F);
-						r.addOutput(ic2.core.Ic2Items.iridiumOre, .025F);
+						r.addOutput(ic2.api.item.IC2Items.getItem("iridiumOre"), .025F);  //core.Ic2Items.iridiumOre, .025F);
+						r.addOutput(ic2.api.item.IC2Items.getItem("iridiumOre"), .025F);  //core.Ic2Items.iridiumOre, .025F);
 					}
 				}
 			}
 			
 			if(!OreDictionary.getOres("dustCoal").isEmpty()) {
 				ItemStack coalDust = OreDictionary.getOres("dustCoal").get(0);
-				ItemStack coal = new ItemStack(Item.coal);
+				ItemStack coal = new ItemStack(Items.coal);
 				IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(coal, true, true);
 				r.addOutput(coalDust, 1.0F);
 			}
@@ -781,7 +796,7 @@ public class RcDustsItems {
 			if(hasNickel) {
 				for (ItemStack newFoundOre : OreDictionary.getOres("oreNetherNickel")) {
 					IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-					r.addOutput(new ItemStack(nickel.itemID, 4, nickel.getItemDamage()), 1.0F);
+					r.addOutput(new ItemStack(nickel.getItem(), 4, nickel.getItemDamage()), 1.0F);
 					r.addOutput(nickel, .1F);
 					r.addOutput(nickel, .1F);
 					if(!OreDictionary.getOres("dustPlatinum").isEmpty()) {
@@ -795,11 +810,11 @@ public class RcDustsItems {
 				ItemStack nikolite = OreDictionary.getOres("dustNikolite").get(0);
 				for (ItemStack newFoundOre : OreDictionary.getOres("oreNetherNikolite")) {
 					IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-					r.addOutput(new ItemStack(nikolite.itemID, 30, nikolite.getItemDamage()), 1.0F);
+					r.addOutput(new ItemStack(nikolite.getItem(), 30, nikolite.getItemDamage()), 1.0F);
 					r.addOutput(nikolite, .1F);
 					r.addOutput(nikolite, .1F);
-					r.addOutput(new ItemStack(Item.diamond, 1), .025F);
-					r.addOutput(new ItemStack(Item.diamond, 1), .025F);
+					r.addOutput(new ItemStack(Items.diamond, 1), .025F);
+					r.addOutput(new ItemStack(Items.diamond, 1), .025F);
 				}
 			}
 			
@@ -807,7 +822,7 @@ public class RcDustsItems {
 				ItemStack osmium = OreDictionary.getOres("dustOsmium").get(0);
 				for (ItemStack newFoundOre : OreDictionary.getOres("oreNetherOsmium")) {
 					IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-					r.addOutput(new ItemStack(osmium.itemID, 4, osmium.getItemDamage()), 1.0F);
+					r.addOutput(new ItemStack(osmium.getItem(), 4, osmium.getItemDamage()), 1.0F);
 					r.addOutput(osmium, .1F);
 					r.addOutput(osmium, .1F);
 				}
@@ -817,7 +832,7 @@ public class RcDustsItems {
 				ItemStack steel = OreDictionary.getOres("dustSteel").get(0);
 				for (ItemStack newFoundOre : OreDictionary.getOres("oreNetherSteel")) {
 					IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(newFoundOre, true, true);
-					r.addOutput(new ItemStack(steel.itemID, 4, steel.getItemDamage()), 1.0F);
+					r.addOutput(new ItemStack(steel.getItem(), 4, steel.getItemDamage()), 1.0F);
 					r.addOutput(steel, .1F);
 					r.addOutput(steel, .1F);
 				}
@@ -826,29 +841,31 @@ public class RcDustsItems {
 	}
 	
 	public static void registerBaseRecipes() {
-		
+
+//template:	GameRegistry.addSmelting(input, output, xp);
+
 		if(isTinkersConstructInstalled) {
+			GameRegistry.addSmelting(dustNaturalAluminum, OreDictionary.getOres("ingotAluminum").get(0), 0.1f);
+			GameRegistry.addSmelting(dustAluminumBrass, OreDictionary.getOres("ingotAluminumBrass").get(0), 0.1f);
 			
-			FurnaceRecipes.smelting().addSmelting(dustNaturalAluminum.itemID, 7, OreDictionary.getOres("ingotAluminum").get(0), 0.1f);
-			FurnaceRecipes.smelting().addSmelting(dustAluminumBrass.itemID, 8, OreDictionary.getOres("ingotAluminumBrass").get(0), 0.1f);
-			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(dust, 2, 8), "dustCopper", "dustAluminum", "dustAluminum", "dustAluminum"));
-			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(dust, 1, 11), "dustCobalt", "dustCobalt", "dustArdite", "dustArdite"));
+			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(dustAluminumBrass.getItem(), 2), "dustCopper", "dustAluminum", "dustAluminum", "dustAluminum"));
+			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(dustManyullyn.getItem(), 1), "dustCobalt", "dustCobalt", "dustArdite", "dustArdite"));
 			if(ConfigurationHandler.manyullynBlastFurnace) {
 				RailcraftCraftingManager.blastFurnace.addRecipe(dustManyullyn, true, true, 1280, OreDictionary.getOres("ingotManyullyn").get(0));
 			}else {
-				FurnaceRecipes.smelting().addSmelting(dustManyullyn.itemID, 11, OreDictionary.getOres("ingotManyullyn").get(0), 0.1f);
+				GameRegistry.addSmelting(dustManyullyn, OreDictionary.getOres("ingotManyullyn").get(0), 0.1f);
 			}
 			
 			if(ConfigurationHandler.cobaltBlastFurnace) {
 				RailcraftCraftingManager.blastFurnace.addRecipe(dustCobalt, true, true, 1280, OreDictionary.getOres("ingotCobalt").get(0));
 			}else {
-				FurnaceRecipes.smelting().addSmelting(dustCobalt.itemID, 9, OreDictionary.getOres("ingotCobalt").get(0), 0.1f);
+				GameRegistry.addSmelting(dustCobalt, OreDictionary.getOres("ingotCobalt").get(0), 0.1f);
 			}
 			
 			if(ConfigurationHandler.arditeBlastFurnace) {
 				RailcraftCraftingManager.blastFurnace.addRecipe(dustArdite, true, true, 1280, OreDictionary.getOres("ingotArdite").get(0));
 			}else {
-				FurnaceRecipes.smelting().addSmelting(dustArdite.itemID, 10, OreDictionary.getOres("ingotArdite").get(0), 0.1f);
+				GameRegistry.addSmelting(dustArdite, OreDictionary.getOres("ingotArdite").get(0), 0.1f);
 			}
 			
 				
@@ -868,32 +885,32 @@ public class RcDustsItems {
 			
 		}
 		
-		if(hasCopperIngot && hasTinIngot) {
+		if(hasCopperIngot && hasTinIngot && hasBronzeIngot) {
 			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(dust, ConfigurationHandler.bronzePerCraft, 6), "dustTin", "dustCopper", "dustCopper", "dustCopper"));
-			FurnaceRecipes.smelting().addSmelting(dustBronze.itemID, 6, OreDictionary.getOres("ingotBronze").get(0), 0.1f);
+			GameRegistry.addSmelting(dustBronze, OreDictionary.getOres("ingotBronze").get(0), 0.1f);
 		}
 		
-		FurnaceRecipes.smelting().addSmelting(dustGold.itemID, 1, new ItemStack(Item.ingotGold, 1), 0.1f);
-		FurnaceRecipes.smelting().addSmelting(dustIron.itemID, 2, new ItemStack(Item.ingotIron, 1), 0.1f);
+		GameRegistry.addSmelting(dustGold, new ItemStack(Items.gold_ingot, 1), 0.1f);
+		GameRegistry.addSmelting(dustIron, new ItemStack(Items.iron_ingot, 1), 0.1f);
 		
 		if(hasCopperIngot) {
-			FurnaceRecipes.smelting().addSmelting(dustCopper.itemID, 0, OreDictionary.getOres("ingotCopper").get(0), 0.1f);
+			GameRegistry.addSmelting(dustCopper, OreDictionary.getOres("ingotCopper").get(0), 0.1f);
 		}
 		
 		if(hasTinIngot) {
-			FurnaceRecipes.smelting().addSmelting(dustTin.itemID, 5, OreDictionary.getOres("ingotTin").get(0), 0.1f);
+			GameRegistry.addSmelting(dustTin, OreDictionary.getOres("ingotTin").get(0), 0.1f);
 		}
 		
 		if(hasLeadIngot) {
-			FurnaceRecipes.smelting().addSmelting(dustLead.itemID, 3, OreDictionary.getOres("ingotLead").get(0), 0.1f);
+			GameRegistry.addSmelting(dustLead, OreDictionary.getOres("ingotLead").get(0), 0.1f);
 		}
 		
 		if(hasSilverIngot) {
-			FurnaceRecipes.smelting().addSmelting(dustSilver.itemID, 4, OreDictionary.getOres("ingotSilver").get(0), 0.1f);
+			GameRegistry.addSmelting(dustSilver, OreDictionary.getOres("ingotSilver").get(0), 0.1f);
 		}
 	}
 
-	public static void biomesOPlentyOreDictRoundup() {
+/*	public static void biomesOPlentyOreDictRoundup() {
 		if(Boolean.valueOf(Loader.isModLoaded("BiomesOPlenty")).booleanValue()) {
 			Random random = new Random();
 			Block bopOre = biomesoplenty.api.Blocks.amethystOre.get();
@@ -931,7 +948,7 @@ public class RcDustsItems {
 				OreDictionary.registerOre("oreSapphire", oreSapphire);
 			}	
 		}
-	}
+	}*/
 
 	/**
 	 * TODO: replace registerRcDustsRecipes with this entirely?
@@ -945,7 +962,7 @@ public class RcDustsItems {
 				hasOre = false;
 				hasIngot = false;
 				if(s.contains("ore")) {
-					ListIterator<IRockCrusherRecipe> crusherIterator = RailcraftCraftingManager.rockCrusher.getRecipes().listIterator();
+					ListIterator<? extends IRockCrusherRecipe> crusherIterator = RailcraftCraftingManager.rockCrusher.getRecipes().listIterator();
 					while(crusherIterator.hasNext() && !hasOre) {	
 						IRockCrusherRecipe r = crusherIterator.next();
 						if(OreDictionary.getOreID(r.getInput()) == OreDictionary.getOreID(s)) {
@@ -953,7 +970,7 @@ public class RcDustsItems {
 						}
 					}
 				}else if(s.contains("ingot")) {
-					ListIterator<IRockCrusherRecipe> crusherIterator = RailcraftCraftingManager.rockCrusher.getRecipes().listIterator();
+					ListIterator<? extends IRockCrusherRecipe> crusherIterator = RailcraftCraftingManager.rockCrusher.getRecipes().listIterator();
 					while(crusherIterator.hasNext() && !hasIngot) {	
 						IRockCrusherRecipe r = crusherIterator.next();
 						if(OreDictionary.getOreID(r.getInput()) == OreDictionary.getOreID(s)) {
@@ -1011,7 +1028,7 @@ public class RcDustsItems {
 	}
 
 	public static void removeBlastFurnaceSteel() {
-		ListIterator<IBlastFurnaceRecipe> blastIterator = RailcraftCraftingManager.blastFurnace.getRecipes().listIterator();
+		ListIterator<? extends IBlastFurnaceRecipe> blastIterator = RailcraftCraftingManager.blastFurnace.getRecipes().listIterator();
 		while(blastIterator.hasNext()) {
 			IBlastFurnaceRecipe r = blastIterator.next();
 			ItemStack output = r.getOutput();
@@ -1026,11 +1043,11 @@ public class RcDustsItems {
 		
 		HashSet<Integer> tinkersOreIds = new HashSet<Integer>();
 		for(ItemStack s : OreDictionary.getOres("oreCobalt")) {
-			tinkersOreIds.add(s.itemID);
+			tinkersOreIds.add(s.hashCode());
 		}
 		
 		for(ItemStack s : OreDictionary.getOres("oreIron")) {
-			if(tinkersOreIds.contains(s.itemID)) {
+			if(tinkersOreIds.contains(s.hashCode())) {
 				IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(s, true, true);
 				ItemStack crushed = OreDictionary.getOres("crushedIron").get(0).copy();
 				crushed.stackSize = 2;
@@ -1040,7 +1057,7 @@ public class RcDustsItems {
 		}
 		
 		for(ItemStack s : OreDictionary.getOres("oreGold")) {
-			if(tinkersOreIds.contains(s.itemID)) {
+			if(tinkersOreIds.contains(s.hashCode())) {
 				IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(s, true, true);
 				ItemStack crushed = OreDictionary.getOres("crushedGold").get(0).copy();
 				crushed.stackSize = 2;
@@ -1050,7 +1067,7 @@ public class RcDustsItems {
 		}
 		
 		for(ItemStack s : OreDictionary.getOres("oreCopper")) {
-			if(tinkersOreIds.contains(s.itemID)) {
+			if(tinkersOreIds.contains(s.hashCode())) {
 				IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(s, true, true);
 				ItemStack crushed = OreDictionary.getOres("crushedCopper").get(0).copy();
 				crushed.stackSize = 2;
@@ -1060,7 +1077,7 @@ public class RcDustsItems {
 		}
 		
 		for(ItemStack s : OreDictionary.getOres("oreTin")) {
-			if(tinkersOreIds.contains(s.itemID)) {
+			if(tinkersOreIds.contains(s.hashCode())) {
 				IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(s, true, true);
 				ItemStack crushed = OreDictionary.getOres("crushedTin").get(0).copy();
 				crushed.stackSize = 2;
@@ -1070,7 +1087,7 @@ public class RcDustsItems {
 		}
 		
 		for(ItemStack s : OreDictionary.getOres("oreAluminum")) {
-			if(tinkersOreIds.contains(s.itemID)) {
+			if(tinkersOreIds.contains(s.hashCode())) {
 				IRockCrusherRecipe r = RailcraftCraftingManager.rockCrusher.createNewRecipe(s, true, true);
 				ItemStack crushed = OreDictionary.getOres("dustImpureAluminium").get(0).copy();
 				crushed.stackSize = 2;

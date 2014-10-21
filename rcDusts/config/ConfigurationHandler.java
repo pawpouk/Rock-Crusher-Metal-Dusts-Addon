@@ -4,7 +4,7 @@ import java.io.File;
 
 import rcDusts.items.RcDustsItemInfo;
 
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 import rcDusts.items.RcDustsItemInfo;
 
 public class ConfigurationHandler {
@@ -22,7 +22,7 @@ public class ConfigurationHandler {
 		Configuration config = new Configuration(file);
 		config.load();
 		
-		RcDustsItemInfo.DUST_ID = config.getItem(RcDustsItemInfo.DUST_KEY, RcDustsItemInfo.DUST_DEFAULT).getInt() - 256;
+//		RcDustsItemInfo.DUST_ID = config.getItem(RcDustsItemInfo.DUST_KEY, RcDustsItemInfo.DUST_DEFAULT).getInt() - 256;
 		bronzePerCraft = config.get("OPTIONS", "Bronze Dust Crafting Output", 4).getInt();
 		manyullynBlastFurnace = config.get("OPTIONS", "manyullynBlastFurnace", true, "cobalt-ardite blend must be smelted in a Blast Furnace to produce ingots.").getBoolean(true);
 		cobaltBlastFurnace = config.get("OPTIONS", "cobaltBlastFurnace", true, "cobalt dust must be smelted in a Blast Furnace to produce ingots.").getBoolean(true);

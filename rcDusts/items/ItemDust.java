@@ -2,60 +2,69 @@ package rcDusts.items;
 
 import java.util.List;
 
-import net.minecraft.client.renderer.texture.IconRegister;
+import rcDusts.ModInformation;
+
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemDust extends Item {
 
-	static int id = RcDustsItemInfo.DUST_ID;
-	static int meta;
+	private final String name = "itemDust";
+	private IIcon[] dustIcons = new IIcon[12];
 	
-	private Icon[] dustIcons = new Icon[12];
-	
-	
-	public ItemDust(int id) {
-		super(id);
-		setHasSubtypes(true);
-		setMaxStackSize(64);
-		setCreativeTab(CreativeTabs.tabMaterials);
-		setUnlocalizedName(RcDustsItemInfo.DUST_NAMES[meta]);
+	public ItemDust() {
+		super();
+		this.setUnlocalizedName(ModInformation.MODID + "_" + name);
+		this.setCreativeTab(CreativeTabs.tabMaterials);
+		this.setHasSubtypes(true);
+		this.setMaxStackSize(64);
+		GameRegistry.registerItem(this, name);
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister register) {
+	public void registerIcons(IIconRegister register) {
 		for(int i = 0; i < dustIcons.length; i++) {
-			dustIcons[i] = register.registerIcon(RcDustsItemInfo.TEXTURE_LOCATION + ":" + RcDustsItemInfo.DUST_ICONS[i]);
+			dustIcons[i] = register.registerIcon(ModInformation.MODID + ":" + RcDustsItemInfo.DUST_ICONS[i]);
 		}
 	}
-	
-	@Override
+
+//	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack itemStack, EntityPlayer player, List info, boolean useExtraInformation) {
-		
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public Icon getIconFromDamage(int dmg) {
+	public IIcon getIconFromDamage(int dmg) {
 		return dustIcons[dmg];
 	}
 	
-	public String getUnlocalizedName(ItemStack itemstack) {
-        return RcDustsItemInfo.DUST_UNLOCALIZED_NAMES[itemstack.getItemDamage()];
-    }
-	
+	 @SideOnly(Side.CLIENT)
+	 public IIcon getIcon(int side, int meta) {
+		 return dustIcons[meta];
+	 }
+	 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@SideOnly(Side.CLIENT)
-    public void getSubItems(int itemID, CreativeTabs tabs, List list){
-		for(int i = 0; i < RcDustsItemInfo.DUST_NAMES.length; i++){
-			list.add(new ItemStack(itemID, 1, i));
+	@Override
+	public void getSubItems(Item item, CreativeTabs tabs, List list){
+		for(int i = 0; i < RcDustsItemInfo.DUST_UNLOCALIZED_NAMES.length; i++){
+			list.add(new ItemStack(item, 1, i));
 		}
 	}
+	
+	@Override
+	public String getUnlocalizedName(ItemStack itemstack) {
+        return "item." + ModInformation.MODID + "_" + RcDustsItemInfo.DUST_UNLOCALIZED_NAMES[itemstack.getItemDamage()];
+    }
+	
+	@Override
+    public int getMetadata(int meta) { 
+        return meta;
+    }
+
 }
